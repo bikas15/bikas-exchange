@@ -52,7 +52,7 @@ http.createServer({ requestTimeout: 15000, headersTimeout: 10000 }, async (req, 
   const expectedOrigin = publicOrigin?.origin || 'http://' + req.headers.host;
   if (!allowedHost
       || (req.headers.origin && req.headers.origin !== expectedOrigin)
-      || req.headers['sec-fetch-site'] === 'cross-site') {
+      || (req.method === 'POST' && req.headers['sec-fetch-site'] === 'cross-site')) {
     res.writeHead(403);
     return res.end('Forbidden');
   }
@@ -81,6 +81,7 @@ http.createServer({ requestTimeout: 15000, headersTimeout: 10000 }, async (req, 
     res.end(JSON.stringify({ error: 'Market feed temporarily unavailable' }));
   }
 }).listen(port, publicOrigin ? '0.0.0.0' : '127.0.0.1', () => console.log('Bikas listening on port ' + port));
+
 
 
 
